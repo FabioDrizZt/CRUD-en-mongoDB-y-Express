@@ -4,6 +4,8 @@ const app = express()
 const port = process.env.PORT ?? 3000
 const morgan = require('morgan')
 const { ObjectId } = require('mongodb')
+const { validarPeli, validarPeliParcialmente } = require('./schemas/pelis')
+const crypto = require('node:crypto')
 
 //Middleware
 app.use(express.json())
@@ -21,6 +23,7 @@ app.use('/peliculas', connectToMongoDB, async (req, res, next) => {
 app.get('/', (req, res) => {
   res.json('Bienvenido a la API de peliculas !')
 })
+
 //Obtener todas las peliculas
 app.get('/peliculas', async (req, res) => {
   const { genero } = req.query
@@ -44,6 +47,26 @@ app.get('/peliculas/:id', async (req, res) => {
   const pelicula = await req.db.findOne({ _id: objectId })
   if (pelicula) return res.json(pelicula)
   res.status(404).json({ message: 'Peli no encontrada' })
+})
+
+//Agregar una peli
+app.post('/peliculas', async (req, res) => {
+  const resultado = validarPeli(req.body)
+
+  if (!resultado.success) return res.status(400).json(resultado.error.message)
+
+  // Agregar id interno es opcional en este caso ya que mongodb tambien genera su propio uuid
+  const nuevaPeli = {
+    id: crypto.randomUUID(),
+    ...resultado.data,
+  }
+
+  try {
+    await req.db.insertOne(nuevaPeli)
+    res.json(nuevaPeli)
+  } catch {
+    return res.status(500).json({ message: 'Error al agregar la peli' })
+  }
 })
 
 //Inicializamos el servidor
