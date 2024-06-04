@@ -6,6 +6,7 @@ const morgan = require('morgan')
 const { ObjectId } = require('mongodb')
 const { validarPeli, validarPeliParcialmente } = require('./schemas/pelis')
 const crypto = require('node:crypto')
+const { ReturnDocument } = require('mongodb')
 
 //Middleware
 app.use(express.json())
@@ -83,6 +84,30 @@ app.delete('/peliculas/:id', async (req, res) => {
     res.json({ message: 'Peli borrada con exito' })
   } catch (error) {
     return res.status(500).json({ message: 'Error al borrar la peli' })
+  }
+})
+
+//Modificar/Actualizar una peli
+app.patch('/peliculas/:id', async (req, res) => {
+  const resultado = validarPeliParcialmente(req.body)
+  if (!resultado.success) return res.status(400).json(resultado.error.message)
+
+  const { id } = req.params
+  const objectId = new ObjectId(id)
+
+  try {
+    const peliActualizada = await req.db.findOneAndUpdate(
+      { _id: objectId },
+      { $set: resultado.data },
+      { returnDocument: 'after' }
+    )
+
+    if (!peliActualizada) {
+      return res.status(404).json({ message: 'Peli no encontrada para borrar' })
+    }
+    res.json({ message: 'Peli actualizada con exito', peliActualizada })
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al actualizar la peli' })
   }
 })
 

@@ -28,11 +28,11 @@ content-type: application/json
 DELETE http://localhost:3000/peliculas/665fa0eed3f77bb44ffbcc94
 
 ### Modificar/Actualizar una peli
-PATCH http://localhost:3000/peliculas/5ad1a235-0d9c-410a-b32b-220d91689a08
+PATCH http://localhost:3000/peliculas/665fa3d536d2e45a08b76b52
 content-type: application/json
 
 {
     "sql": "SELECT * FROM users",
-    "duration": 200,
-    "year" : 2023
+    "duration": 222,
+    "year" : 2022
 }
