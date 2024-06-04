@@ -63,9 +63,26 @@ app.post('/peliculas', async (req, res) => {
 
   try {
     await req.db.insertOne(nuevaPeli)
-    res.json(nuevaPeli)
+    res.status(201).json(nuevaPeli)
   } catch {
     return res.status(500).json({ message: 'Error al agregar la peli' })
+  }
+})
+
+//Borrar una peli por id
+app.delete('/peliculas/:id', async (req, res) => {
+  const { id } = req.params
+  const objectId = new ObjectId(id)
+
+  try {
+    const { deletedCount } = await req.db.deleteOne({ _id: objectId })
+
+    if (deletedCount === 0) {
+      return res.status(404).json({ message: 'Peli no encontrada para borrar' })
+    }
+    res.json({ message: 'Peli borrada con exito' })
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al borrar la peli' })
   }
 })
 
