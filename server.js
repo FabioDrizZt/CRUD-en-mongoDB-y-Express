@@ -23,8 +23,14 @@ app.get('/', (req, res) => {
 })
 //Obtener todas las peliculas
 app.get('/peliculas', async (req, res) => {
+  const { genero } = req.query
   try {
-    peliculas = await req.db.find().toArray()
+    const peliculas = !genero
+      ? await req.db.find().toArray()
+      : await req.db
+          .find({ genre: { $regex: genero, $options: 'i' } })
+          .toArray()
+
     res.json(peliculas)
   } catch (error) {
     res.status(500).send('Error al obtener las peliculas')
