@@ -2,7 +2,7 @@
 http://localhost:3000
 
 ### Mostrar todas las pelis
-GET http://localhost:3000/peliculas
+GET http://localhost:3000/frutas
 
 ### Mostrar las pelis de un cierto genero
 GET http://localhost:3000/peliculas?genero=action
