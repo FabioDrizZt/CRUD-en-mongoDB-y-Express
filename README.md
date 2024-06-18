@@ -9,8 +9,8 @@ Para instalar y ejecutar este proyecto, sigue los siguientes pasos:
 
 1. Clona el repositorio:
     ```sh
-    git clone https://github.com/tu_usuario/tu_repositorio.git
-    cd tu_repositorio
+    git clone https://github.com/FabioDrizZt/CRUD-en-mongoDB-y-Express.git
+    cd CRUD-en-mongoDB-y-Express
     ```
 
 2. Instala las dependencias:
